@@ -143,17 +143,18 @@ public class ExerciseRecordController extends HttpServlet {
             }
 
             exerciseRecordService.updateExerciseRecord(record);
-            
+
             // 設置成功訊息
             request.setAttribute("successMessage", "更新成功!");
 
-           // 重定向回 exerciseRecords.jsp
-            if (record.getUserId() != null) {
-                response.sendRedirect(request.getContextPath() + "/jsp/fitness/exerciseRecords.jsp?userId=" + record.getUserId());
-            } else {
-                System.out.println("userId is null before redirecting");
-                throw new ServletException("更新後的 userId 為 null，無法跳轉");
-            }        } catch (Exception e) {
+            // 取得並顯示該用戶的所有運動紀錄
+            List<ExerciseRecord> records = exerciseRecordService.getExerciseRecords(record.getUserId());
+            request.setAttribute("records", records);
+
+            // 轉發到 exerciseRecords.jsp，顯示更新後的紀錄
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/fitness/exerciseRecords.jsp");
+            dispatcher.forward(request, response);
+        } catch (Exception e) {
             handleError(e, request, response);
         }
     }

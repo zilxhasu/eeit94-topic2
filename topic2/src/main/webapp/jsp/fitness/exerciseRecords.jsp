@@ -9,7 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercise Records</title>
     <style>
-        /* 輸入框和表單樣式 */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -45,8 +44,7 @@
             display: inline;
         }
 
-        /* 按鈕樣式（Update 和 Delete 按鈕） */
-        .update,.delete{
+        .update, .delete {
             padding: 5px 10px;
             margin: 0 5px;
             background-color: #4585A0;
@@ -55,16 +53,15 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        
-       .update:hover{
-            background-color: #6BCFF9 ;
+
+        .update:hover {
+            background-color: #6BCFF9;
         }
-        
-       .delete:hover {
+
+        .delete:hover {
             background-color: #E1AFBE;
         }
 
-        /* 顯示錯誤訊息 */
         .error-message {
             color: red;
             padding: 10px;
@@ -90,7 +87,6 @@
             color: #333;
         }
 
-        /* 返回主畫面的按鈕樣式 */
         .back-button {
             padding: 10px 20px;
             background-color: #459CA0;
@@ -114,14 +110,12 @@
 <body>
     <h1>Exercise Records</h1>
 
-    <!-- 顯示錯誤訊息 -->
     <c:if test="${not empty errorMessage}">
         <div class="error-message">
             <strong>Error:</strong> ${errorMessage}
         </div>
     </c:if>
 
-    <!-- 顯示成功訊息 -->
     <c:if test="${not empty successMessage}">
         <div class="alert-success">
             <c:choose>
@@ -135,7 +129,6 @@
         </div>
     </c:if>
 
-    <!-- 顯示運動紀錄 -->
     <c:if test="${not empty records}">
         <table>
             <thead>
@@ -155,12 +148,10 @@
                         <td>${record.caloriesBurned}</td>
                         <td>${record.exerciseDate}</td>
                         <td>
-                            <!-- 更新按鈕，會跳轉到更新頁面 -->
                             <a href="../../api/fitness/progress?action=update&recordId=${record.recordId}&userId=${record.userId}">
                                 <input type="button" value="Update" class="update">
                             </a>
 
-                            <!-- 刪除表單 -->
                             <form action="../../api/fitness/progress" method="post" style="display:inline;">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="recordId" value="${record.recordId}">
@@ -173,7 +164,6 @@
             </tbody>
         </table>
 
-        <!-- 顯示資料總數 -->
         <div class="record-count">
             <p>Total Records: ${fn:length(records)}</p>
         </div>
@@ -183,7 +173,6 @@
         <p>No records found for the given User ID.</p>
     </c:if>
 
-    <!-- 返回主畫面的按鈕 -->
     <button class="back-button" onclick="window.location.href='../../jsp/fitness/index.jsp'">Back To Home</button>
 </body>
 </html>
