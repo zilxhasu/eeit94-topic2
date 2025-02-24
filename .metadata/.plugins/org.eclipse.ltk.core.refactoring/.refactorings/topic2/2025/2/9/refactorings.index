@@ -1,0 +1,23 @@
+1740309889614	Rename package 'daoo'
+1740310066948	Rename resource 'dao'
+1740310313948	Rename type 'ExerciseRecordServlet'
+1740310371689	Rename type 'ExerciseRecordService'
+1740310474861	Delete element
+1740310557728	Move compilation unit
+1740310569711	Copy package
+1740310590091	Delete element
+1740310682352	Rename resource 'bean'
+1740310699546	Move 'fitness' to 'model'
+1740310782376	Copy compilation unit
+1740310789515	Delete element
+1740311691013	Copy compilation unit
+1740311706906	Rename package 'daoo'
+1740311934055	Rename package 'daoo.fintness'
+1740311951394	Delete element
+1740312360122	Move 'ProgressController.java' to 'fitness'
+1740312378371	Move 'ProgressService.java' to 'fitness'
+1740312456509	Rename resource 'ProgressService.java'
+1740312482954	Rename resource 'ProgressController.java'
+1740312805835	Move 'ExerciseRecordService.java' to 'fitness'
+1740314754962	Move 4 resources to 'fitness'
+1740315539604	Delete element

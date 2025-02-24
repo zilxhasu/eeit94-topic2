@@ -1,0 +1,10 @@
+INDEX VERSION 1.4+/Users/zilxhasu/HealthManagement/.metadata/.plugins/org.eclipse.wst.jsdt.core/indexes
+1977400794.index
+4043978476.index
+2440255813.index
+1334189272.index
+3364331103.index
+213629922.index
+2802420026.index
+2239103127.index
+1885765896.index

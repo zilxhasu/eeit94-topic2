@@ -1,0 +1,39 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise Records</title>
+</head>
+<body>
+    <h1>Exercise Records</h1>
+
+    <!-- Form to Add New Record -->
+    <form action="../ExerciseRecordServlet" method="post">
+        <input type="hidden" name="action" value="add">
+        
+        <!-- Select User ID -->
+        <label>User ID:</label>
+        <select name="userId" required>
+            <c:forEach var="user" items="${users}">
+                <option value="${user.userId}">${user.userName}</option> <!-- Assuming user object has userId and userName -->
+            </c:forEach>
+        </select><br><br>
+
+        <label>Exercise Type:</label>
+        <select name="exerciseType" required>
+            <option value="有氧">有氧</option>
+            <option value="重訓">重訓</option>
+            <option value="瑜伽">瑜伽</option>
+            <option value="其他">其他</option>
+        </select><br><br>
+
+        <label>Exercise Duration (minutes):</label>
+        <input type="number" name="exerciseDuration" required><br>
+
+        <label>Exercise Date:</label>
+        <input type="date" name="exerciseDate" required><br>
+

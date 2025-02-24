@@ -1,0 +1,31 @@
+
+
+public class Snippet {
+	public void addExerciseRecord(ExerciseRecord record) throws SQLException, NamingException {
+	    // 取得用戶體重
+	    float userWeight = getUserWeight(record.getUserId());
+	    if (userWeight == 0) {
+	        throw new SQLException("User weight not found!");
+	    }
+	
+	    // 根據用戶體重和運動類型取得消耗係數
+	    try (Connection conn = getConnection()) {
+	        ExerciseRecordDAO dao = new ExerciseRecordDAO(conn);
+	        float calorieCoefficient = dao.getCalorieCoefficient(record.getExerciseType(), userWeight);
+	
+	        if (calorieCoefficient == 0) {
+	            throw new SQLException("Calorie coefficient not found for exercise type and user weight.");
+	        }
+	
+	        // 計算卡路里
+	        int caloriesBurned = (int) (record.getExerciseDuration() * userWeight * calorieCoefficient);
+	
+	        // 設定計算出的卡路里
+	        record.setCaloriesBurned(caloriesBurned);
+	
+	        // 儲存運動紀錄到資料庫
+	        dao.addExerciseRecord(record);
+	    }
+	}
+	
+}

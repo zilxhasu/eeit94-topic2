@@ -1,0 +1,4 @@
+browser-choice=1
+browsers=<?xml version\="1.0" encoding\="UTF-8"?>\n<web-browsers current\="0">\n<system/>\n<external location\="/Applications/Google Chrome.app" name\="Chrome"/>\n<external location\="/Applications/Safari.app" name\="Safari"/>\n</web-browsers>
+eclipse.preferences.version=1
+internalWebBrowserHistory=http\://localhost\:8080/topic2/NewFile.html|*|http\://localhost\:8080/topic2/jsp/exerciseRecords.jsp|*|http\://localhost\:8080/topic2/ExerciseRecordServlet|*|http\://localhost\:8080/topic2/index.jsp|*|http\://localhost\:8080/topic2/WEB-INF/classes/daoo/ExerciseRecordDAO.java|*|

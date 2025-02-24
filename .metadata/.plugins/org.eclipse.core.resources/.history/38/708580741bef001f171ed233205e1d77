@@ -1,0 +1,74 @@
+package service;
+
+import java.sql.*;
+
+public class ExerciseRecordService {
+
+    private static final String DB_URL = "jdbc:your_database_url";
+    private static final String DB_USER = "your_database_user";
+    private static final String DB_PASSWORD = "your_database_password";
+
+    // 計算卡路里並儲存運動紀錄
+    public void addExerciseRecord(ExerciseRecord record) throws SQLException {
+        // 取得用戶體重
+        float userWeight = getUserWeight(record.getUserId());
+
+        // 取得運動類型的消耗係數
+        float calorieCoefficient = getCalorieCoefficient(record.getExerciseType());
+
+        // 計算卡路里
+        int caloriesBurned = (int) (record.getExerciseDuration() * userWeight * calorieCoefficient);
+
+        // 設定計算出的卡路里
+        record.setCaloriesBurned(caloriesBurned);
+
+        // 插入運動紀錄
+        insertExerciseRecord(record);
+    }
+
+    // 取得用戶體重
+    private float getUserWeight(int userId) throws SQLException {
+        String query = "SELECT weight FROM users WHERE user_id = ?";
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getFloat("weight");
+                }
+            }
+        }
+        return 0;
+    }
+
+    // 取得運動類型的消耗係數
+    private float getCalorieCoefficient(String exerciseType) throws SQLException {
+        String query = "SELECT calorie_coefficient FROM exercise_type_coefficients WHERE exercise_type = ?";
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, exerciseType);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getFloat("calorie_coefficient");
+                }
+            }
+        }
+        return 0;
+    }
+
+    // 插入運動紀錄
+    private void insertExerciseRecord(ExerciseRecord record) throws SQLException {
+        String insertQuery = "INSERT INTO exercise_records (user_id, exercise_type, exercise_duration, calories_burned, exercise_date, progress_percentage) " +
+                             "VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement ps = conn.prepareStatement(insertQuery)) {
+            ps.setInt(1, record.getUserId());
+            ps.setString(2, record.getExerciseType());
+            ps.setInt(3, record.getExerciseDuration());
+            ps.setInt(4, record.getCaloriesBurned());
+            ps.setDate(5, record.getExerciseDate());
+            ps.setFloat(6, record.getProgressPercentage());
+            ps.executeUpdate();
+        }
+    }
+}

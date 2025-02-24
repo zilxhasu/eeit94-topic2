@@ -1,0 +1,30 @@
+package service;
+
+import bean.User;
+import daoo.UserDAO;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.List;
+
+public class UserService {
+
+    private static final String JNDI_NAME = "java:/comp/env/jdbc/topicTWOdb"; 
+
+    // 獲取資料庫連接
+    private Connection getConnection() throws SQLException, NamingException {
+        InitialContext context = new InitialContext();
+        DataSource ds = (DataSource) context.lookup(JNDI_NAME);
+        return ds.getConnection();
+    }
+
+    // 獲取所有用戶
+    public List<User> getAllUsers() throws SQLException, NamingException {
+        try (Connection conn = getConnection()) {
+            UserDAO dao = new UserDAO(conn);
+            return dao.getAllUsers();  // 呼叫 DAO 層的查詢方法
+        }
+    }
+}

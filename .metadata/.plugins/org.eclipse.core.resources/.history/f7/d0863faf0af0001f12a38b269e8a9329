@@ -1,0 +1,73 @@
+package service;
+
+import bean.ExerciseRecord;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.sql.*;
+import daoo.ExerciseRecordDAO;
+
+
+public class ExerciseRecordService {
+
+    private static final String JNDI_NAME = "java:/comp/env/jdbc/topicTWOdb"; 
+    private Connection getConnection() throws SQLException, NamingException {
+        InitialContext context = new InitialContext();
+        DataSource ds = (DataSource) context.lookup(JNDI_NAME);
+        return ds.getConnection();
+    }
+
+    // 計算卡路里並儲存運動紀錄
+    public void addExerciseRecord(ExerciseRecord record) throws SQLException, NamingException {
+        // 取得用戶體重
+        float userWeight = getUserWeight(record.getUserId());
+
+        if (userWeight == 0) {
+            throw new SQLException("User weight not found!");
+        }
+
+     // 取得運動類型的消耗係數（調用 DAO 層）
+        try (Connection conn = getConnection()) {
+            ExerciseRecordDAO dao = new ExerciseRecordDAO(conn);
+            float calorieCoefficient = dao.getCalorieCoefficient(record.getExerciseType());
+
+            if (calorieCoefficient == 0) {
+                throw new SQLException("Calorie coefficient not found for exercise type: " + record.getExerciseType());
+            }
+
+            // 計算卡路里
+            int caloriesBurned = (int) (record.getExerciseDuration() * userWeight * calorieCoefficient);
+
+            // 設定計算出的卡路里
+            record.setCaloriesBurned(caloriesBurned);
+
+            // 儲存運動紀錄到資料庫
+            dao.addExerciseRecord(record);  // 確保在 DAO 層有此方法
+        }
+        
+     // 使用 try-with-resources 來確保連線被正確管理
+        try (Connection conn = getConnection()) {  // 確保資料庫連線在此處被建立並自動關閉
+            // 儲存運動紀錄到資料庫
+            ExerciseRecordDAO dao = new ExerciseRecordDAO(conn);  // 傳遞資料庫連線
+            dao.addExerciseRecord(record);  // 呼叫 DAO 方法儲存紀錄
+        } catch (SQLException | NamingException e) {
+            throw new SQLException("Error while adding exercise record: " + e.getMessage(), e);  // 捕捉並重新拋出異常
+        }
+    }
+    // 取得用戶體重
+    private float getUserWeight(int userId) throws SQLException, NamingException {
+        String query = "SELECT weight FROM users WHERE user_id = ?";
+        try (Connection conn = getConnection();  // 使用 getConnection 获取连接
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getFloat("weight");
+                }
+            }
+        }
+        return 0;
+    }
+
+    
+}

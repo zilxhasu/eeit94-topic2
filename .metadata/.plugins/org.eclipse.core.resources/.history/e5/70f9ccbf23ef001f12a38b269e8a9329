@@ -1,0 +1,93 @@
+package dao;
+
+import bean.ExerciseRecord;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import javax.sql.DataSource;
+
+public class ExerciseRecordDAO {
+
+    private Connection conn;
+
+    // 使用依賴注入的方式傳遞Connection
+    public ExerciseRecordDAO(Connection conn) {
+        this.conn = conn;
+    }
+
+    // 新增運動紀錄
+    public boolean addExerciseRecord(ExerciseRecord record) {
+        String query = "INSERT INTO exercise_records (user_id, exercise_type, exercise_duration, calories_burned, exercise_date, progress_percentage) " +
+                       "VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, record.getUserId());
+            ps.setString(2, record.getExerciseType());
+            ps.setInt(3, record.getExerciseDuration());
+            ps.setInt(4, record.getCaloriesBurned());
+            ps.setString(5, record.getExerciseDate());
+            ps.setFloat(6, record.getProgressPercentage());
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // 查詢用戶的所有運動紀錄
+    public List<ExerciseRecord> getExerciseRecords(int userId) {
+        String query = "SELECT * FROM exercise_records WHERE user_id = ?";
+        List<ExerciseRecord> records = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ExerciseRecord record = new ExerciseRecord();
+                    record.setRecordId(rs.getInt("record_id"));
+                    record.setUserId(rs.getInt("user_id"));
+                    record.setExerciseType(rs.getString("exercise_type"));
+                    record.setExerciseDuration(rs.getInt("exercise_duration"));
+                    record.setCaloriesBurned(rs.getInt("calories_burned"));
+                    record.setExerciseDate(rs.getString("exercise_date"));
+                    record.setProgressPercentage(rs.getFloat("progress_percentage"));
+                    records.add(record);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return records;
+    }
+
+    // 更新運動紀錄
+    public boolean updateExerciseRecord(ExerciseRecord record) {
+        String query = "UPDATE exercise_records SET exercise_type = ?, exercise_duration = ?, calories_burned = ?, exercise_date = ?, progress_percentage = ? " +
+                       "WHERE record_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, record.getExerciseType());
+            ps.setInt(2, record.getExerciseDuration());
+            ps.setInt(3, record.getCaloriesBurned());
+            ps.setString(4, record.getExerciseDate());
+            ps.setFloat(5, record.getProgressPercentage());
+            ps.setInt(6, record.getRecordId());
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // 刪除運動紀錄
+    public boolean deleteExerciseRecord(int recordId) {
+        String query = "DELETE FROM exercise_records WHERE record_id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, recordId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+}

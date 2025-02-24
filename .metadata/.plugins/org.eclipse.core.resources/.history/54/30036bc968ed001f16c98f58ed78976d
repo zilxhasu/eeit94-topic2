@@ -1,0 +1,91 @@
+package controller;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import bean.ExerciseRecord;  // 確保這個導入語句是正確的
+
+
+public class ExerciseRecordDAO {
+    private Connection connection;
+
+    // Constructor to initialize the connection
+    public ExerciseRecordDAO(Connection connection) {
+        this.connection = connection;
+    }
+
+    // CREATE: Add a new exercise record
+    public boolean addExerciseRecord(ExerciseRecord record) {
+        String sql = "INSERT INTO exercise_records (user_id, exercise_type, exercise_duration, calories_burned, exercise_date, progress_percentage) " +
+                     "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, record.getUserId());
+            stmt.setString(2, record.getExerciseType());
+            stmt.setInt(3, record.getExerciseDuration());
+            stmt.setInt(4, record.getCaloriesBurned());
+            stmt.setString(5, record.getExerciseDate());
+            stmt.setFloat(6, record.getProgressPercentage());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    // READ: Get all exercise records for a specific user
+    public List<ExerciseRecord> getExerciseRecords(int userId) {
+        List<ExerciseRecord> records = new ArrayList<>();
+        String sql = "SELECT * FROM exercise_records WHERE user_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                ExerciseRecord record = new ExerciseRecord();
+                record.setRecordId(rs.getInt("record_id"));
+                record.setUserId(rs.getInt("user_id"));
+                record.setExerciseType(rs.getString("exercise_type"));
+                record.setExerciseDuration(rs.getInt("exercise_duration"));
+                record.setCaloriesBurned(rs.getInt("calories_burned"));
+                record.setExerciseDate(rs.getString("exercise_date"));
+                record.setProgressPercentage(rs.getFloat("progress_percentage"));
+                records.add(record);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return records;
+    }
+
+    // UPDATE: Update an existing exercise record
+    public boolean updateExerciseRecord(ExerciseRecord record) {
+        String sql = "UPDATE exercise_records SET exercise_type = ?, exercise_duration = ?, calories_burned = ?, exercise_date = ?, progress_percentage = ? WHERE record_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, record.getExerciseType());
+            stmt.setInt(2, record.getExerciseDuration());
+            stmt.setInt(3, record.getCaloriesBurned());
+            stmt.setString(4, record.getExerciseDate());
+            stmt.setFloat(5, record.getProgressPercentage());
+            stmt.setInt(6, record.getRecordId());
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // DELETE: Delete an exercise record
+    public boolean deleteExerciseRecord(int recordId) {
+        String sql = "DELETE FROM exercise_records WHERE record_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, recordId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+}
