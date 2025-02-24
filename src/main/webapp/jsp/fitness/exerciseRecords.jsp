@@ -184,6 +184,6 @@
     </c:if>
 
     <!-- 返回主畫面的按鈕 -->
-    <button class="back-button" onclick="window.location.href='../../jsp/fitness/index.jsp'">Back To Home</button>
+    <button class="back-button" onclick="window.location.href='index.jsp'">Back To Home</button>
 </body>
 </html>

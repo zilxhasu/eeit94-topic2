@@ -58,7 +58,7 @@ public class ExerciseRecordController extends HttpServlet {
                         throw new ServletException("找不到運動紀錄，ID: " + recordId);
                     }
                     request.setAttribute("record", record);
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("../jsp/fitness/updateExerciseRecord.jsp");
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/fitness/updateExerciseRecord.jsp");
                     dispatcher.forward(request, response);
                 } catch (Exception e) {
                     handleError(e, request, response);
@@ -66,7 +66,7 @@ public class ExerciseRecordController extends HttpServlet {
             } else if ("add".equals(action)) {
                 User user = getUserFromRequest(request); // 重用取得用戶的邏輯
                 request.setAttribute("userId", user.getUserId());
-                RequestDispatcher dispatcher = request.getRequestDispatcher("../jsp/fitness/addExerciseRecord.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/fitness/addExerciseRecord.jsp");
                 dispatcher.forward(request, response);
             } else {
                 User user = getUserFromRequest(request); // 重用取得用戶的邏輯
@@ -74,7 +74,7 @@ public class ExerciseRecordController extends HttpServlet {
                 List<ExerciseRecord> records = exerciseRecordService.getExerciseRecords(user.getUserId());
                 request.setAttribute("records", records);
                 request.setAttribute("users", users);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("../jsp/fitness/exerciseRecords.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/fitness/exerciseRecords.jsp");
                 dispatcher.forward(request, response);
             }
         } catch (Exception e) {
@@ -124,7 +124,7 @@ public class ExerciseRecordController extends HttpServlet {
             request.setAttribute("records", records);
             
             // 跳轉到 exerciseRecords.jsp，將成功訊息和運動紀錄傳遞過去
-            RequestDispatcher dispatcher = request.getRequestDispatcher("../jsp/fitness/exerciseRecords.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/fitness/exerciseRecords.jsp");
             dispatcher.forward(request, response);
         } catch (Exception e) {
             handleError(e, request, response);
@@ -150,7 +150,7 @@ public class ExerciseRecordController extends HttpServlet {
 
            // 重定向回 exerciseRecords.jsp
             if (record.getUserId() != null) {
-                response.sendRedirect(request.getContextPath() + "../jsp/fitness/exerciseRecords.jsp?userId=" + record.getUserId());
+                response.sendRedirect(request.getContextPath() + "/jsp/fitness/exerciseRecords.jsp?userId=" + record.getUserId());
             } else {
                 System.out.println("userId is null before redirecting");
                 throw new ServletException("更新後的 userId 為 null，無法跳轉");
@@ -187,7 +187,7 @@ public class ExerciseRecordController extends HttpServlet {
             request.setAttribute("records", records);
 
             // 跳轉到 exerciseRecords.jsp
-            RequestDispatcher dispatcher = request.getRequestDispatcher("../jsp/fitness/exerciseRecords.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/fitness/exerciseRecords.jsp");
             dispatcher.forward(request, response);
         } catch (Exception e) {
             handleError(e, request, response);
@@ -232,7 +232,7 @@ public class ExerciseRecordController extends HttpServlet {
         e.printStackTrace();
         String errorMessage = "無法處理請求: " + e.getMessage();
         request.setAttribute("errorMessage", errorMessage);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("../jsp/fitness/error.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/fitness/error.jsp");
         dispatcher.forward(request, response);
     }
 

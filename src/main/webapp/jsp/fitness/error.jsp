@@ -28,7 +28,7 @@
     <h1>Error</h1>
     <p>${errorMessage}</p>
 
-<button class="back-button" onclick="window.location.href='../../jsp/fitness/index.jsp'">Back To Home</button>
+<button class="back-button" onclick="window.location.href='index.jsp'">Back To Home</button>
     
         
 </body>
